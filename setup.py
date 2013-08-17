@@ -1,21 +1,17 @@
 #!/usr/bin/env python
 
 import os
+from os import path
 import sys
-from glob import glob
 
 sys.path.insert(0, os.path.abspath('lib'))
 from ansible import __version__, __author__
-from distutils.core import setup
+from setuptools import setup
 
 # find library modules
-from ansible.constants import DIST_MODULE_PATH
-dirs=os.listdir("./library/")
 data_files = []
-for i in dirs:
-    data_files.append((DIST_MODULE_PATH + i, glob('./library/' + i + '/*')))
-
-print "DATA FILES=%s" % data_files
+for dp, ds, fs in os.walk('./library'):
+    if len(fs) > 0: data_files.append((dp, [path.join(dp, f) for f in fs]))
 
 setup(name='ansible',
       version=__version__,
